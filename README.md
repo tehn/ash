@@ -2,5 +2,5 @@
 
 - angl: arc grains
 - earthsea: grid-based pattern instrument
-- orbits: dual looper
+- orbit: dual looper
 - playfair: euclidean drummer
