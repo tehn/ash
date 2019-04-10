@@ -17,7 +17,7 @@ engine.name = 'Ack'
 
 local g = grid.connect()
 
-local ack = require 'we/lib/ack'
+local ack = require 'ack/lib/ack'
 local BeatClock = require 'beatclock'
 
 local clk = BeatClock.new()
