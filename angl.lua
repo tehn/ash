@@ -1,5 +1,6 @@
 -- angl: arc grains
--- @tehn, engine: glut @artfwo
+-- 1.0.0 @tehn
+-- llllllll.co/t/21349
 --
 -- load files via param menu
 --

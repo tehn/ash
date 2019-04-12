@@ -1,6 +1,6 @@
 -- earthsea: pattern instrument
--- 1.1.0 - @tehn
--- llllllll.co/t/20366
+-- 1.1.0 @tehn
+-- llllllll.co/t/21349
 --
 -- subtractive polysynth
 -- controlled by midi or grid

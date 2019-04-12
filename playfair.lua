@@ -1,5 +1,6 @@
 -- euclidean drummer
--- @tehn
+-- 2.0.0 @tehn
+-- llllllll.co/t/21349
 --
 -- E1 select
 -- E2 density

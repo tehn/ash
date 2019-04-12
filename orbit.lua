@@ -1,6 +1,6 @@
 -- orbit: loop collector
 -- 1.0.0 @tehn
--- llllllll.co/t/
+-- llllllll.co/t/21349
 --
 -- two loops with start-stop capture,
 -- level and rate control.
