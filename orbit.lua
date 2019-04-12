@@ -12,7 +12,7 @@ local edit = "rate"
 function init()
   audio.level_cut(1)
   audio.level_adc_cut(1)
-  audio.level_ext_cut(1)
+  audio.level_eng_cut(1)
   for i=1,2 do
     softcut.level(i,0)
     softcut.level_slew_time(1,0.1)
