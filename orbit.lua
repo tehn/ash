@@ -1,6 +1,14 @@
 -- orbit: loop collector
 -- 1.0.0 @tehn
--- ...
+-- llllllll.co/t/
+--
+-- two loops with start-stop capture,
+-- level and rate control.
+--
+-- K2/K3 = toggle rec/play
+-- K1+K2/K3 = stop
+-- E2/E3 = change param value
+-- E1 = change selected param 
 
 local cs = require 'controlspec'
 
@@ -32,11 +40,7 @@ function init()
     softcut.position(i, 1)
     softcut.buffer(i,i)
     softcut.enable(i, 1)
-    softcut.filter_dry(i, 0.125);
-    softcut.filter_fc(i, 1200);
-    softcut.filter_lp(i, 0);
-    softcut.filter_bp(i, 1.0);
-    softcut.filter_rq(i, 2.0);
+    softcut.filter_dry(i, 1);
   end
 
   params:add{type = "control", id = "1level", name = "1.level",
@@ -53,10 +57,10 @@ function init()
     action = function(x) softcut.rate(2,x) end}
 end
 
-local function start(i)
+local function rec(i)
   start_time[i] = util.time()
   --softcut.buffer_clear_region_channel(i,0,loop_len[i]+2)
-  --softcut.buffer_clear_channel(i)
+  softcut.buffer_clear_channel(i)
   softcut.level(i,0)
   --params:set(i.."rate",1)
   softcut.loop_end(i, 91)
@@ -66,7 +70,7 @@ local function start(i)
   state[i] = "rec"
 end
 
-local function stop(i)
+local function play(i)
   loop_len[i] = util.time() - start_time[i]
   softcut.level(i,1)
   softcut.rec_level(i, 0)
@@ -85,17 +89,14 @@ end
 function key(n,z)
   local i=n-1
   if n==1 then alt = z
+  elseif n>1 and z==1 and alt==1 then
+    clear(i)
   elseif n>1 and z==1 and state[i]~="rec" then
-    start(i)
-    redraw()
+    rec(i)
   elseif n>1 and z==1 and state[i]=="rec" then
-    if alt==1 then
-      clear(i)
-    else
-      stop(i)
-      redraw()
-    end
+    play(i)
   end
+  redraw()
 end
 
 function enc(n,delta)
