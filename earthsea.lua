@@ -148,8 +148,12 @@ function grid_note(e)
   if e.state > 0 then
     if nvoices < MAX_NUM_VOICES then
       --engine.start(id, getHz(x, y-1))
-      --print("grid > "..id.." "..note)
-      engine.start(e.id, getHzET(note))
+      print("grid > "..e.id.." "..note)
+      --engine.start(e.id, getHzET(note))
+      crow.output[1].volts = note/12
+      crow.output[2].slew = 0.1
+      crow.output[2].volts = 8
+      
       start_screen_note(note)
       lit[e.id] = {}
       lit[e.id].x = e.x
@@ -158,10 +162,15 @@ function grid_note(e)
     end
   else
     if lit[e.id] ~= nil then
-      engine.stop(e.id)
+      --engine.stop(e.id)
       stop_screen_note(note)
       lit[e.id] = nil
       nvoices = nvoices - 1
+    end
+
+    if nvoices == 0 then
+      crow.output[2].slew = 1.5
+      crow.output[2].volts = 0
     end
   end
   gridredraw()
@@ -173,7 +182,11 @@ function grid_note_trans(e)
     if nvoices < MAX_NUM_VOICES then
       --engine.start(id, getHz(x, y-1))
       --print("grid > "..id.." "..note)
-      engine.start(e.id, getHzET(note))
+      --engine.start(e.id, getHzET(note))
+      crow.output[1].volts = note/12
+      crow.output[2].slew = 0.1
+      crow.output[2].volts = 8
+ 
       start_screen_note(note)
       lit[e.id] = {}
       lit[e.id].x = e.x + trans.x - root.x
@@ -185,6 +198,10 @@ function grid_note_trans(e)
     stop_screen_note(note)
     lit[e.id] = nil
     nvoices = nvoices - 1
+    if nvoices == 0 then
+      crow.output[2].slew = 1.5
+      crow.output[2].volts = 0
+    end
   end
   gridredraw()
 end
