@@ -32,8 +32,9 @@ local screen_notes = {}
 
 local MAX_NUM_VOICES = 16
 
-local options = {}
-options.OUTPUT = {"audio", "crow out 1+2", "crow ii JF"}
+local options = {
+  OUTPUT = {"audio", "crow out 1+2", "crow ii JF"}
+}
 
 engine.name = 'PolySub'
 
