@@ -32,6 +32,10 @@ local screen_notes = {}
 
 local MAX_NUM_VOICES = 16
 
+local options = {
+  OUTPUT = {"audio", "crow out 1+2", "crow ii JF"}
+}
+
 engine.name = 'PolySub'
 
 -- pythagorean minor/major, kinda
@@ -62,7 +66,21 @@ function init()
 
   polysub:params()
 
-
+  params:add_separator()
+  
+  params:add{type = "option", id = "output", name = "output",
+    options = options.OUTPUT,
+    action = function(value)
+      engine.stopAll()
+      stop_all_screen_notes()
+      if value == 2 then crow.output[2].action = "{to(5,0),to(0,0.25)}"
+      elseif value == 3 then
+        crow.ii.pullup(true)
+        crow.ii.jf.mode(1)
+      end
+    end
+  }
+  
   engine.stopAll()
   stop_all_screen_notes()
 
@@ -142,6 +160,22 @@ function g.key(x, y, z)
   gridredraw()
 end
 
+local function start_note(id, note)
+  if params:get("output") == 1 then
+    engine.start(id, getHzET(note))
+  elseif params:get("output") == 2 then
+    crow.output[1].volts = note/12
+    crow.output[2].execute()
+  elseif params:get("output") == 3 then
+    crow.ii.jf.play_note(note/12,5)
+  end
+end  
+
+local function stop_note(id)
+  if params:get("output") == 1 then
+    engine.stop(id)
+  end      
+end
 
 function grid_note(e)
   local note = ((7-e.y)*5) + e.x
@@ -149,7 +183,7 @@ function grid_note(e)
     if nvoices < MAX_NUM_VOICES then
       --engine.start(id, getHz(x, y-1))
       --print("grid > "..id.." "..note)
-      engine.start(e.id, getHzET(note))
+      start_note(e.id, note)
       start_screen_note(note)
       lit[e.id] = {}
       lit[e.id].x = e.x
@@ -173,7 +207,7 @@ function grid_note_trans(e)
     if nvoices < MAX_NUM_VOICES then
       --engine.start(id, getHz(x, y-1))
       --print("grid > "..id.." "..note)
-      engine.start(e.id, getHzET(note))
+      start_note(e.id, note)
       start_screen_note(note)
       lit[e.id] = {}
       lit[e.id].x = e.x + trans.x - root.x
@@ -181,7 +215,7 @@ function grid_note_trans(e)
       nvoices = nvoices + 1
     end
   else
-    engine.stop(e.id)
+    stop_note(e.id)
     stop_screen_note(note)
     lit[e.id] = nil
     nvoices = nvoices - 1
