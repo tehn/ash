@@ -129,7 +129,7 @@ function init()
     params:add_taper(v.."fade", v..sep.."att / dec", 1, 9000, 1000, 3, "ms")
     params:set_action(v.."fade", function(value) engine.envscale(v, value / 1000) end)
   end
-
+  params:read()
   params:bang()
 end
 
