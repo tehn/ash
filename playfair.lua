@@ -16,25 +16,25 @@
 er = require 'er'
 engine.name = 'Ack'
 
-local g = grid.connect()
+g = grid.connect()
 
-local ack = require 'ack/lib/ack'
-local BeatClock = require 'beatclock'
+ack = require 'ack/lib/ack'
+BeatClock = require 'beatclock'
 
-local clk = BeatClock.new()
-local clk_midi = midi.connect()
+clk = BeatClock.new()
+clk_midi = midi.connect()
 clk_midi.event = function(data)
   clk:process_midi(data)
 end
 
-local reset = false
-local alt = false
-local running = true
-local track_edit = 1
-local current_pattern = 0
-local current_pset = 0
+reset = false
+alt = false
+running = true
+track_edit = 1
+current_pattern = 0
+current_pset = 0
 
-local track = {}
+track = {}
 for i=1,4 do
   track[i] = {
     k = 0,
@@ -44,7 +44,7 @@ for i=1,4 do
   }
 end
 
-local pattern = {}
+pattern = {}
 for i=1,112 do
   pattern[i] = {
     data = 0,
@@ -57,7 +57,7 @@ for i=1,112 do
   end
 end
 
-local function reer(i)
+function reer(i)
   if track[i].k == 0 then
     for n=1,32 do track[i].s[n] = false end
   else
@@ -65,7 +65,7 @@ local function reer(i)
   end
 end
 
-local function trig()
+function trig()
   for i=1,4 do
     if track[i].s[track[i].pos] then
       engine.trig(i-1)
@@ -179,9 +179,10 @@ function redraw()
 end
 
 
-local keytimer = 0
+keytimer = 0
 
-function g.event(x,y,z)
+function g.key(x,y,z)
+  print(x,y,z)
   local id = x + (y-1)*16
   if z==1 then
     if id > 16 then
@@ -219,15 +220,15 @@ function g.event(x,y,z)
 end
 
 function gridredraw()
-  g.all(0)
+  g:all(0)
   if current_pset > 0 and current_pset < 17 then
-    g.led(current_pset,1,9)
+    g:led(current_pset,1,9)
   end
   for x=1,16 do
     for y=2,8 do
       local id = x + (y-2)*16
       if pattern[id].data == 1 then
-        g.led(x,y,id == current_pattern and 15 or 4)
+        g:led(x,y,id == current_pattern and 15 or 4)
       end
     end
   end
