@@ -16,6 +16,7 @@ local pattern_time = require 'pattern_time'
 local polysub = require 'polysub'
 
 local g = grid.connect()
+local last_row = g.rows
 
 local mode_transpose = 0
 local root = { x=5, y=5 }
@@ -139,17 +140,18 @@ function g.key(x, y, z)
         stop_all_screen_notes()
         nvoices = 0
         lit = {}
-      elseif y == 8 then
+      elseif y == last_row then
         mode_transpose = 1 - mode_transpose
       end
     end
   else
     if mode_transpose == 0 then
-      local e = {}
-      e.id = x*8 + y
-      e.x = x
-      e.y = y
-      e.state = z
+      local e = {
+        id = x*8 + y,
+        x = x,
+        y = y,
+        state = z 
+      }
       pat:watch(e)
       grid_note(e)
     else
@@ -185,9 +187,10 @@ function grid_note(e)
       --print("grid > "..id.." "..note)
       start_note(e.id, note)
       start_screen_note(note)
-      lit[e.id] = {}
-      lit[e.id].x = e.x
-      lit[e.id].y = e.y
+      lit[e.id] = {
+        x = e.x,
+        y = e.y
+      }
       nvoices = nvoices + 1
     end
   else
@@ -209,9 +212,10 @@ function grid_note_trans(e)
       --print("grid > "..id.." "..note)
       start_note(e.id, note)
       start_screen_note(note)
-      lit[e.id] = {}
-      lit[e.id].x = e.x + trans.x - root.x
-      lit[e.id].y = e.y + trans.y - root.y
+      lit[e.id] = {
+        x = e.x + trans.x - root.x,
+        y = e.y + trans.y - root.y
+      }
       nvoices = nvoices + 1
     end
   else
@@ -227,7 +231,7 @@ function gridredraw()
   g:all(0)
   g:led(1,1,2 + pat.rec * 10)
   g:led(1,2,2 + pat.play * 10)
-  g:led(1,8,2 + mode_transpose * 10)
+  g:led(1,last_row,2 + mode_transpose * 10)
 
   if mode_transpose == 1 then g:led(trans.x, trans.y, 4) end
   for i,e in pairs(lit) do
